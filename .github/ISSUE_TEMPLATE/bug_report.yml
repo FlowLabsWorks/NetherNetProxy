@@ -1,0 +1,51 @@
+name: Bug report
+description: The server does not appear in the LAN list, or joining fails
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please read the **Troubleshooting** section of the README first.
+        Remove host names or addresses you do not want to publish.
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Console / device
+      options: [Xbox, PlayStation, Nintendo Switch, Windows, Android / iOS, Other]
+    validations:
+      required: true
+  - type: input
+    id: minecraft
+    attributes:
+      label: Minecraft version on the console
+      placeholder: "26.60"
+    validations:
+      required: true
+  - type: input
+    id: server
+    attributes:
+      label: Bedrock Dedicated Server version
+      placeholder: "1.26.60"
+    validations:
+      required: true
+  - type: input
+    id: proxy
+    attributes:
+      label: NetherNetProxy version
+      description: Output of `nethernet-proxy -version`
+      placeholder: "NetherNetProxy 0.1.0"
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you expect, what did you see on the console?
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description: "`journalctl -u nethernet-proxy` or the output with `-v`. Include the output of `-check`."
+      render: text

@@ -1,0 +1,9 @@
+# Layout of the generated part of the release notes (see .github/workflows/release.yml).
+changelog:
+  exclude:
+    authors:
+      - dependabot
+      - github-actions
+  categories:
+    - title: Changes
+      labels: ["*"]

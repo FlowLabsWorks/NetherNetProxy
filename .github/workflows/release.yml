@@ -1,0 +1,87 @@
+name: Release
+
+# Runs when a version tag such as v0.1.0 or v0.2.0-rc1 is pushed. Tags with a hyphen are published
+# as pre-releases. Every archive and SHA256SUMS get a signed build provenance attestation
+# (Sigstore, keyless - no key to manage); see "Verify a download" in the README.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write      # create the release
+      id-token: write      # request the short-lived signing certificate
+      attestations: write  # store the attestations
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - name: Vet and test
+        run: go vet ./... && go test ./...
+      - name: Build and package
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          set -eu
+          mkdir -p release
+          build() { # os arch arm suffix
+            name="nethernet-proxy-$VERSION-$4"
+            dir="release/$name"
+            mkdir -p "$dir"
+            bin=nethernet-proxy; [ "$1" = windows ] && bin=nethernet-proxy.exe
+            CGO_ENABLED=0 GOOS=$1 GOARCH=$2 GOARM=$3 go build -trimpath \
+              -ldflags "-s -w -X main.version=$VERSION" -o "$dir/$bin" ./cmd/nethernet-proxy
+            cp LICENSE THIRD_PARTY_NOTICES.md README.md CHANGELOG.md config.example.json "$dir/"
+            cp -r deploy "$dir/"
+            if [ "$1" = windows ]; then
+              (cd release && zip -qr "$name.zip" "$name")
+            else
+              tar -C release -czf "release/$name.tar.gz" "$name"
+            fi
+          }
+          build linux   amd64 ""  linux-amd64
+          build linux   arm64 ""  linux-arm64
+          build linux   arm   7   linux-armv7
+          build linux   arm   6   linux-armv6
+          build windows amd64 ""  windows-amd64
+          (cd release && sha256sum *.tar.gz *.zip > SHA256SUMS)
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: |
+            release/*.tar.gz
+            release/*.zip
+            release/SHA256SUMS
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -eu
+          flags=""
+          case "$TAG" in *-*) flags="--prerelease" ;; esac
+          cat > notes.md <<'EOF'
+          **Downloads:** pick the archive for your platform – Raspberry Pi with 32-bit Raspberry Pi OS:
+          `linux-armv7`, with a 64-bit OS: `linux-arm64`, PC or server: `linux-amd64`, Windows:
+          `windows-amd64`. Installation and configuration are described in the
+          [README](https://github.com/@REPO@#readme).
+
+          **Verify a download** (signed build provenance, no key to manage):
+
+          ```sh
+          sha256sum -c SHA256SUMS --ignore-missing
+          gh attestation verify <file> --repo @REPO@
+          ```
+
+          EOF
+          sed -i "s|@REPO@|$REPO|g" notes.md
+          gh release create "$TAG" release/*.tar.gz release/*.zip release/SHA256SUMS \
+            --title "NetherNetProxy $TAG" --notes-file notes.md --generate-notes $flags

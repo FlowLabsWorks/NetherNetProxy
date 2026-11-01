@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: gomod
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: weekly
+    # The pion modules depend on each other; updating them separately leaves conflicting go.sum
+    # changes, so they arrive as one pull request.
+    groups:
+      pion:
+        patterns: ["github.com/pion/*"]
+      golang-x:
+        patterns: ["golang.org/x/*"]
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]

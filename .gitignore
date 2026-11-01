@@ -1,0 +1,10 @@
+# build output
+/dist/
+/release/
+/nethernet-proxy
+/nethernet-proxy.exe
+
+# your real configuration (contains your server's host name)
+/config.json
+
+*.log

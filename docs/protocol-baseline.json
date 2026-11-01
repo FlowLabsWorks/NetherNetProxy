@@ -1,0 +1,24 @@
+{
+  "source": "Mojang/bedrock-protocol-docs",
+  "tag": "v1.26.61",
+  "protocol": 2225,
+  "packets": {
+    "ChunkRadiusUpdatedPacket": "d34236fa3e7b94172a41fa8b81b76c137e3144b615e356e8d0b80f0a70e415ca",
+    "ClientCacheStatusPacket": "e79dc18818c92e41679721b5615d41c90ff2728095a80bb024a66823165c3fb6",
+    "CreativeContentPacket": "d966b81f0160f941a3d0bb2a34828ca51617e568375721b026efe9874abfd3cb",
+    "ItemRegistryPacket": "f8d13a6348fe70b6e3c6761b15f20159f6d9fc7f0d40ab35c293c6f8be5f765b",
+    "JigsawStructureDataPacket": "0a926caabb18df6298efda94b934284b72a570da2c54b99911edf60ed748172d",
+    "LoginPacket": "fddfc04a8e2b899b8babe11ca0eef9e32c30fc1e3348a7e421c996c88bc812cf",
+    "NetworkSettingsPacket": "f11d68de14de438bf4aa4cc65ea6aefc2161fc49738c3651f296f064843ab6ac",
+    "PlayStatusPacket": "eb615d4417eaf1865efb3476770fec2e5ae136bf05cc61df7848e6eed9d67ac0",
+    "RequestChunkRadiusPacket": "f853864f3f3afae1d57bcfab31656d753f9d6f400de61d0be90f2b566026a7c7",
+    "RequestNetworkSettingsPacket": "296eef872e0f49b8453d99889d6b4fab7c100be83a58f4ae5f1294b0d8941619",
+    "ResourcePackClientResponsePacket": "5e6266ba9a085c25b9fa15db71e83f159a6d4133947475d33c484b08d8dd7be9",
+    "ResourcePackStackPacket": "66a66cb1e37c18f21a1d27e483273af6275524b91aa7d8a65651f997f04766b8",
+    "ResourcePacksInfoPacket": "1c82f39d75d58563fe24f5cd79cc930c0f941f93ab4b998381d53d6e76c7caac",
+    "SetLocalPlayerAsInitializedPacket": "fe16473d658d4556d9023d1e825747c6facbda808ece1486bcdc312b122a740e",
+    "StartGamePacket": "a4697480ff449010037e2377e1b24ba1692d2702254fba06c29413f5444ea893",
+    "TransferPacket": "ec8febddf8d7f0bb9406ec07b52638939e333f69644ea2271de1d3e1b25f5e2d",
+    "VoxelShapesPacket": "635689dc63a9529931bc24b713abc2f82caa3e968443d51870f31c9669ddca40"
+  }
+}

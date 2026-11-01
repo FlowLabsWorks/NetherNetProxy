@@ -1,0 +1,34 @@
+[Unit]
+Description=NetherNetProxy - announce NetherNet Bedrock servers as LAN worlds
+Documentation=https://github.com/FlowLabsWorks/NetherNetProxy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=nethernet-proxy
+Group=nethernet-proxy
+ExecStart=/opt/nethernet-proxy/nethernet-proxy -config /etc/nethernet-proxy/config.json
+Restart=always
+RestartSec=5
+
+# The proxy needs nothing but the network: UDP 7551 is not a privileged port.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+# AF_NETLINK is needed to list the host's own addresses for the LAN candidates.
+RestrictAddressFamilies=AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=true
+RestrictRealtime=true
+LockPersonality=true
+SystemCallArchitectures=native
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+[Install]
+WantedBy=multi-user.target

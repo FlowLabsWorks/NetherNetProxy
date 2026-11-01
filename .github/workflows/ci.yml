@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  schedule:
+    # Weekly: catches breakage from dependency updates even when nobody pushes.
+    - cron: "17 4 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - name: gofmt
+        run: test -z "$(gofmt -l .)"
+      - run: go vet ./...
+      - run: go test -race ./...
+
+  vulncheck:
+    runs-on: ubuntu-latest
+    steps:
+      # Checks out the repository itself and scans with the latest stable Go, which is what
+      # you want when looking for known vulnerabilities in the standard library too.
+      - uses: golang/govulncheck-action@v1
+        with:
+          go-package: ./...
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { goos: linux, goarch: amd64, goarm: "" }
+          - { goos: linux, goarch: arm64, goarm: "" }
+          - { goos: linux, goarch: arm, goarm: "7" }
+          - { goos: linux, goarch: arm, goarm: "6" }
+          - { goos: windows, goarch: amd64, goarm: "" }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - name: Build
+        env:
+          CGO_ENABLED: "0"
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          GOARM: ${{ matrix.goarm }}
+        run: go build -trimpath -ldflags "-s -w -X main.version=${GITHUB_SHA::7}" -o nethernet-proxy ./cmd/nethernet-proxy
+      - uses: actions/upload-artifact@v7
+        with:
+          name: nethernet-proxy-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goarm }}
+          path: nethernet-proxy

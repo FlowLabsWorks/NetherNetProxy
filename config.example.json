@@ -1,0 +1,9 @@
+{
+  "bind": ":7551",
+  "host": "minecraft.example.com",
+  "worlds": [
+    { "name": "survival", "port": 19132 },
+    { "name": "creative", "port": 19134 },
+    { "name": "flat", "port": 19136 }
+  ]
+}

@@ -1,0 +1,59 @@
+name: Protocol watch
+
+# Every four hours: compare the Bedrock protocol schemas Mojang publishes with docs/protocol-baseline.json
+# and open an issue (which notifies the repository owner) for every new change to a packet the
+# proxy depends on. See docs/UPDATING.md.
+
+on:
+  schedule:
+    - cron: "17 */4 * * *"
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: "Mojang doc tags to check instead of the newest ones (comma separated)"
+        required: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  watch:
+    # Scheduled workflows also run in forks, where they would only waste minutes.
+    if: github.repository == 'FlowLabsWorks/NetherNetProxy'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - name: Compare with the baseline
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          TAGS: ${{ inputs.tags }}
+        run: go run ./tools/protocolwatch -tags "$TAGS" -out findings.json
+      - name: Open issues for new changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create protocol-change --color D93F0B \
+            --description "Mojang changed a protocol schema the proxy depends on" 2>/dev/null || true
+          gh label create templates-unchanged --color 0E8A16 \
+            --description "The recorded packets encode to the same bytes under the new schemas" 2>/dev/null || true
+          gh label create templates-changed --color B60205 \
+            --description "The recorded packets would change on the wire under the new schemas" 2>/dev/null || true
+          gh label create templates-unknown --color FBCA04 \
+            --description "The template check could not be completed" 2>/dev/null || true
+          jq -c '.[]' findings.json | while read -r finding; do
+            key=$(jq -r .key <<<"$finding")
+            title=$(jq -r .title <<<"$finding")
+            # The key is part of the title, so a change that was reported before (open or closed) is found.
+            if [ -n "$(gh issue list --state all --search "$key in:title" --json number --jq '.[0].number')" ]; then
+              echo "already reported: $title"
+              continue
+            fi
+            jq -r .body <<<"$finding" > body.md
+            labels=$(jq -r '.labels | join(",")' <<<"$finding")
+            gh issue create --title "$title" --body-file body.md --label "$labels"
+          done
