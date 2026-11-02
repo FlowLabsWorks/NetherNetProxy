@@ -10,7 +10,7 @@ Dedicated Server version, the NetherNetProxy version (`nethernet-proxy -version`
 want to publish.
 
 Reports that a console other than an Xbox works or fails are especially valuable – the project is
-only tested with an Xbox so far.
+only tested with an Xbox and a Windows PC so far.
 
 ## Development setup
 

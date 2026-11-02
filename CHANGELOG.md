@@ -29,10 +29,13 @@ First version, published as pre-releases.
   under the new schemas (`internal/schemacodec`).
 - Community files: code of conduct, issue and pull request templates, CODEOWNERS, SUPPORT.md and a
   social preview image (`docs/assets`).
+- Compatibility table in the README: which proxy version was tested with which game and server
+  version on Xbox and Windows PC.
 
 ### Known limitations
 
-- Tested with an Xbox on Minecraft Bedrock 26.60 (protocol 2225) only. IPv4 only.
+- Tested on an Xbox and a Windows PC with Minecraft Bedrock 26.60 (protocol 2225) only, see the
+  compatibility table in the README. IPv4 only.
 - The replayed handshake packets are recordings of one protocol version; see `docs/UPDATING.md`.
 
 [Unreleased]: https://github.com/FlowLabsWorks/NetherNetProxy/commits/main

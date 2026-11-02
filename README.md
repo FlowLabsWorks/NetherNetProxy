@@ -16,7 +16,8 @@ default to the NetherNet transport (WebRTC), and 26.60 removes RakNet from the c
 - [Server setup](#1-server-setup) · [Install](#2-install) · [Configure](#3-configure) ·
   [Run](#4-run) · [Join from the console](#5-join-from-the-console)
 - [FAQ](#faq) · [Troubleshooting](#troubleshooting) · [Update and uninstall](#update-and-uninstall) ·
-  [Limitations](#status-and-limitations) · [Development](#development)
+  [Compatibility](#compatibility) · [Limitations](#status-and-limitations) ·
+  [Development](#development)
 
 ## Quick start
 
@@ -250,8 +251,8 @@ small machine, and it needs no open ports towards the internet.
 against your server with its own account on the second join; the proxy never sees or forwards it.
 `online-mode` and the allow-list keep working as before.
 
-**Does it work on PlayStation and Switch?** It uses the same LAN mechanism, but only an Xbox has been
-tested so far. Reports are welcome – please open an issue.
+**Does it work on PlayStation and Switch?** It uses the same LAN mechanism, but only an Xbox and a
+Windows PC have been tested so far. Reports are welcome – please open an issue.
 
 **What happens when Minecraft updates?** The proxy replays a few recorded server packets, which can
 change between versions. A workflow checks Mojang's published protocol documentation every four
@@ -289,10 +290,29 @@ sudo systemctl daemon-reload
 sudo userdel nethernet-proxy
 ```
 
+## Compatibility
+
+Every release is tested on an **Xbox** and a **Windows PC**, each joining through the LAN list
+against Bedrock Dedicated Server with `transport=nethernet`, `online-mode=true` and an allow-list.
+The table shows what was actually tried; "not yet tested" means exactly that.
+
+| Proxy | Game version of the client | Server version (BDS) | Protocol | Xbox | Windows PC |
+| --- | --- | --- | --- | --- | --- |
+| 0.1.0-rc1 | 26.60 | 1.26.60, 1.26.61 | 2225 | ✔ (server 1.26.60) | ✔ (servers 1.26.60 and 1.26.61) |
+| 0.1.0-rc2 | – | – | 2225 | not yet tested | not yet tested |
+
+- ✔ means the console or PC joined a server through the proxy and arrived on the real server.
+- 0.1.0-rc2 only updates dependencies (`golang.org/x/crypto`, `golang.org/x/sys`); no code of the
+  proxy changed.
+- The game version that matters is the one of the **client**: it decides which protocol the client
+  speaks. The server version only has to be one the client can join.
+- New Minecraft versions, including previews, are checked against Mojang's published protocol
+  documentation by a scheduled workflow; see [docs/UPDATING.md](docs/UPDATING.md). That check does not
+  replace a test on a real console, and the table lists only tested versions.
+
 ## Status and limitations
 
-Tested with an **Xbox** on Minecraft Bedrock **26.60 (protocol 2225)** against Bedrock Dedicated
-Server **1.26.60 / 1.26.61** with `transport=nethernet`, `online-mode=true` and an allow-list.
+Tested on an **Xbox** and a **Windows PC**, see [Compatibility](#compatibility) for the versions.
 PlayStation and Switch are untested. IPv4 only.
 
 - **Version coupling.** The few packets the console needs before it accepts a Transfer
