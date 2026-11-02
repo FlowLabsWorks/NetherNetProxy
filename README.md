@@ -299,7 +299,7 @@ The table shows what was actually tried; "not yet tested" means exactly that.
 | Proxy | Game version of the client | Server version (BDS) | Protocol | Xbox | Windows PC |
 | --- | --- | --- | --- | --- | --- |
 | 0.1.0-rc1 | 26.60 | 1.26.60, 1.26.61 | 2225 | ✔ (server 1.26.60) | ✔ (servers 1.26.60 and 1.26.61) |
-| 0.1.0-rc2 | – | – | 2225 | not yet tested | not yet tested |
+| 0.1.0-rc2 | 26.60 (PC) | 1.26.60 | 2225 | not yet tested | ✔ (server 1.26.60) |
 
 - ✔ means the console or PC joined a server through the proxy and arrived on the real server.
 - 0.1.0-rc2 only updates dependencies (`golang.org/x/crypto`, `golang.org/x/sys`); no code of the
