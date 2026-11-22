@@ -3,10 +3,10 @@ module github.com/FlowLabsWorks/NetherNetProxy
 go 1.25.0
 
 require (
-	github.com/pion/dtls/v3 v3.1.15
+	github.com/pion/dtls/v3 v3.1.16
 	github.com/pion/logging v0.2.4
-	github.com/pion/sctp v1.12.0
-	github.com/pion/transport/v5 v5.1.4
+	github.com/pion/sctp v1.12.1
+	github.com/pion/transport/v5 v5.1.5
 )
 
 require (
